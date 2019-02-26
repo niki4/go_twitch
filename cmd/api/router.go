@@ -27,7 +27,7 @@ func (r *Router) RegisterAndRun() error {
 		Post(r.DoLogin)
 
 	router.Get("/streams", r.ListStreams)
-	router.Get("/streams/<id>", r.ShowStreamsPage)
+	router.Get("/streams/<id>", r.ShowStreamPage)
 
 	r.logger.Info("HTTP service started on:", zap.String("address", "127.0.0.1:6121"))
 	return fasthttp.ListenAndServe("127.0.0.1:6121", router.HandleRequest)
