@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ .Title }}</title>
+</head>
+<body>
+<figure>
+    <svg width="24px" height="24px" version="1.1" x="0px" y="0px">
+        <path clip-rule="evenodd"
+              d="M21,9h-2v6h2V9z M5.568,3L4,7v17h5v3h3.886L16,24h5l6-6V3H5.568z M25,16l-4,4h-6l-3,3v-3H8V5h17V16z M16,9h-2v6h2V9z"
+              fill-rule="evenodd">
+        </path>
+    </svg>
+    <a href="{{ .URL.Base }}?client_id={{ .URL.ClientID }}&redirect_uri={{ .URL.RedirectURI}}&response_type={{ .URL.ResponseType }}&scope={{ .URL.Scope }}">
+    {{ .Title }}
+    </a>
+</figure>
+</body>
+</html>
