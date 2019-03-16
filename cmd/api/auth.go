@@ -107,9 +107,6 @@ func requestUserAccessToken(ld LoginData) (UAT, error) {
 		ld.URL.RedirectURI,
 	)
 
-	fmt.Println("URL to send:", u)
-
-	//buf := bytes.NewReader([]byte{})
 	resp, err := http.Post(u, "application/json", nil)
 	if err != nil {
 		return UAT{}, err
@@ -123,17 +120,4 @@ func requestUserAccessToken(ld LoginData) (UAT, error) {
 	}
 
 	return uat, nil
-}
-
-// DoLogin dispatch request to perform Login action
-func (r *Router) DoLogin(ctx *routing.Context) error {
-	//login := ctx.FormValue("username")
-	//pass := ctx.FormValue("password")
-	//
-	//fmt.Fprintf(ctx, "You logged in :) \nLogin: %s\nPassword: %s", login, pass)
-	r.logger.Info("Inside DoLogin() view function", zap.ByteString("Method", ctx.Request.Header.Method()), zap.ByteString("RequestURI", ctx.RequestURI()))
-
-	fmt.Fprintf(ctx, ctx.String())
-
-	return nil
 }
