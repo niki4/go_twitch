@@ -88,7 +88,7 @@ func (r *Router) ShowLoginPage(ctx *routing.Context) error {
 
 	ctx.SetContentType("text/html")
 
-	tmpl := template.Must(template.ParseFiles("/home/home/go/src/github.com/niki4/go_twitch/cmd/api/login.html"))
+	tmpl := template.Must(template.ParseFiles("templates/login.html"))
 	err := tmpl.Execute(ctx, loginData)
 	if err != nil {
 		fmt.Fprintf(ctx, "%s", err)
