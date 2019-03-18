@@ -3,11 +3,12 @@ package api
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/qiangxue/fasthttp-routing"
 	"go.uber.org/zap"
+	"html/template"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type StreamInfo struct {
@@ -39,9 +40,18 @@ func (r *Router) ListStreams(ctx *routing.Context) error {
 		return err
 	}
 
-	r.logger.Info("ListStreams: trying to iterate over received list of streams", zap.Int("total", len(streamLst.Streams)))
+	r.logger.Info("ListStreams: trying to iterate over received list of streams",
+		zap.Int("total", len(streamLst.Streams)))
+
+	// set size for thumbnails
 	for k, v := range streamLst.Streams {
-		fmt.Fprintf(ctx, "%v - %v\n", k, v)
+		streamLst.Streams[k].ThumbURL = strings.Replace(v.ThumbURL, `{width}x{height}`, `50x50`, -1)
+	}
+
+	ctx.SetContentType("text/html")
+	tmpl := template.Must(template.ParseFiles("templates/stream_list.html"))
+	if err = tmpl.Execute(ctx, streamLst); err != nil {
+		r.logger.Error("Cannot render template", zap.Error(err))
 	}
 
 	return nil
