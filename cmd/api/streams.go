@@ -3,6 +3,7 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/qiangxue/fasthttp-routing"
 	"go.uber.org/zap"
 	"html/template"
@@ -25,10 +26,24 @@ type StreamsList struct {
 	Streams []StreamInfo `json:"data"`
 }
 
-type VideoFrame struct {
+type Video struct {
 	PlayerWidth  int
 	PlayerHeight int
 	ChannelName  string
+}
+
+type Chat struct {
+	FrameBorderWidth int
+	Scrolling        string
+	ChannelID        string
+	SrcURL           string
+	Height           int
+	Width            int
+}
+
+type Frames struct {
+	Video
+	Chat
 }
 
 // ListStreams dispatch request to list all Streams
@@ -68,15 +83,25 @@ func (r *Router) ShowStreamPage(ctx *routing.Context) error {
 	channelName := ctx.Param("id")
 	r.logger.Info("ShowStreamPage:", zap.String("ChannelName", channelName))
 
-	vFrame := VideoFrame{
-		PlayerWidth:  640,
-		PlayerHeight: 480,
-		ChannelName:  channelName,
+	embFrames := Frames{
+		Video{
+			PlayerWidth:  640,
+			PlayerHeight: 480,
+			ChannelName:  channelName,
+		},
+		Chat{
+			FrameBorderWidth: 0,
+			Scrolling:        "yes",
+			ChannelID:        channelName,
+			SrcURL:           fmt.Sprintf("https://www.twitch.tv/embed/%s/chat", channelName),
+			Height:           500,
+			Width:            350,
+		},
 	}
 
 	ctx.SetContentType("text/html")
 	tmpl := template.Must(template.ParseFiles("templates/stream_embed.html"))
-	if err := tmpl.Execute(ctx, vFrame); err != nil {
+	if err := tmpl.Execute(ctx, embFrames); err != nil {
 		r.logger.Error("ShowStreamPage: Cannot render template", zap.Error(err))
 	}
 

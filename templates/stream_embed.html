@@ -9,12 +9,20 @@
 <div id="twitch-player"></div>
 <script type="text/javascript">
     var options = {
-        width: {{ .PlayerWidth }},
-        height: {{ .PlayerHeight }},
-        channel: {{ .ChannelName }},
+        width: {{ .Video.PlayerWidth }},
+        height: {{ .Video.PlayerHeight }},
+        channel: {{ .Video.ChannelName }},
     };
     var player = new Twitch.Player("twitch-player", options);
     player.setVolume(0.5);
 </script>
+
+<iframe frameborder="{{ .Chat.FrameBorderWidth}}"
+        scrolling="{{ .Chat.Scrolling }}"
+        id="{{ .Chat.ChannelID }}"
+        src="{{ .Chat.SrcURL }}"
+        height="{{ .Chat.Height }}"
+        width="{{ .Chat.Width }}">
+</iframe>
 </body>
 </html>
