@@ -6,23 +6,26 @@
     <script src="https://player.twitch.tv/js/embed/v1.js"></script>
 </head>
 <body>
-<div id="twitch-player"></div>
-<script type="text/javascript">
-    var options = {
-        width: {{ .Video.PlayerWidth }},
-        height: {{ .Video.PlayerHeight }},
-        channel: {{ .Video.ChannelName }},
-    };
-    var player = new Twitch.Player("twitch-player", options);
-    player.setVolume(0.5);
-</script>
-
-<iframe frameborder="{{ .Chat.FrameBorderWidth}}"
-        scrolling="{{ .Chat.Scrolling }}"
-        id="{{ .Chat.ChannelID }}"
-        src="{{ .Chat.SrcURL }}"
-        height="{{ .Chat.Height }}"
-        width="{{ .Chat.Width }}">
-</iframe>
+<div id="twitch-frames" style="display: flex;">
+    <div id="twitch-player"></div>
+    <script type="text/javascript">
+        var options = {
+            width: {{ .Video.PlayerWidth }},
+            height: {{ .Video.PlayerHeight }},
+            channel: {{ .Video.ChannelName }},
+        };
+        var player = new Twitch.Player("twitch-player", options);
+        player.setVolume(0.5);
+    </script>
+    <div id="twitch-chat">
+        <iframe frameborder="{{ .Chat.FrameBorderWidth}}"
+                scrolling="{{ .Chat.Scrolling }}"
+                id="{{ .Chat.ChannelID }}"
+                src="{{ .Chat.SrcURL }}"
+                height="{{ .Chat.Height }}"
+                width="{{ .Chat.Width }}">
+        </iframe>
+    </div>
+</div>
 </body>
 </html>

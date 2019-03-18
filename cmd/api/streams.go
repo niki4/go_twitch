@@ -85,8 +85,8 @@ func (r *Router) ShowStreamPage(ctx *routing.Context) error {
 
 	embFrames := Frames{
 		Video{
-			PlayerWidth:  640,
-			PlayerHeight: 480,
+			PlayerWidth:  1280,
+			PlayerHeight: 720,
 			ChannelName:  channelName,
 		},
 		Chat{
@@ -94,8 +94,8 @@ func (r *Router) ShowStreamPage(ctx *routing.Context) error {
 			Scrolling:        "yes",
 			ChannelID:        channelName,
 			SrcURL:           fmt.Sprintf("https://www.twitch.tv/embed/%s/chat", channelName),
-			Height:           500,
-			Width:            350,
+			Height:           720,
+			Width:            450,
 		},
 	}
 
