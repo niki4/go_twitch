@@ -25,12 +25,18 @@ type StreamsList struct {
 	Streams []StreamInfo `json:"data"`
 }
 
+type VideoFrame struct {
+	PlayerWidth  int
+	PlayerHeight int
+	ChannelName  string
+}
+
 // ListStreams dispatch request to list all Streams
 func (r *Router) ListStreams(ctx *routing.Context) error {
 	authToken := ctx.Request.Header.Cookie("Authorization")
 	r.logger.Info("ListStreams: Cookie", zap.ByteString("Authorization", authToken))
 
-	resp, err := requestStreamList(authToken)
+	resp, err := getStreamList(authToken)
 
 	r.logger.Info("ListStreams: Twitch API response", zap.String("status", string(resp)))
 
@@ -50,8 +56,8 @@ func (r *Router) ListStreams(ctx *routing.Context) error {
 
 	ctx.SetContentType("text/html")
 	tmpl := template.Must(template.ParseFiles("templates/stream_list.html"))
-	if err = tmpl.Execute(ctx, streamLst); err != nil {
-		r.logger.Error("Cannot render template", zap.Error(err))
+	if err := tmpl.Execute(ctx, streamLst); err != nil {
+		r.logger.Error("ListStreams: Cannot render template", zap.Error(err))
 	}
 
 	return nil
@@ -59,12 +65,26 @@ func (r *Router) ListStreams(ctx *routing.Context) error {
 
 // ShowStreamPage dispatch request for specified Stream
 func (r *Router) ShowStreamPage(ctx *routing.Context) error {
+	channelName := ctx.Param("id")
+	r.logger.Info("ShowStreamPage:", zap.String("ChannelName", channelName))
+
+	vFrame := VideoFrame{
+		PlayerWidth:  640,
+		PlayerHeight: 480,
+		ChannelName:  channelName,
+	}
+
+	ctx.SetContentType("text/html")
+	tmpl := template.Must(template.ParseFiles("templates/stream_embed.html"))
+	if err := tmpl.Execute(ctx, vFrame); err != nil {
+		r.logger.Error("ShowStreamPage: Cannot render template", zap.Error(err))
+	}
 
 	return nil
 }
 
-func requestStreamList(authToken []byte) ([]byte, error) {
-	req, err := http.NewRequest("GET", "https://api.twitch.tv/helix/streams?first=20", nil)
+func requestWithAuthorization(method, url string, authToken []byte) ([]byte, error) {
+	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -83,4 +103,8 @@ func requestStreamList(authToken []byte) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func getStreamList(authToken []byte) ([]byte, error) {
+	return requestWithAuthorization("GET", "https://api.twitch.tv/helix/streams?first=20", authToken)
 }

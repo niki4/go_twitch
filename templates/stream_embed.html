@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Online Stream: {{ .ChannelName }}</title>
+    <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+</head>
+<body>
+<div id="twitch-player"></div>
+<script type="text/javascript">
+    var options = {
+        width: {{ .PlayerWidth }},
+        height: {{ .PlayerHeight }},
+        channel: {{ .ChannelName }},
+    };
+    var player = new Twitch.Player("twitch-player", options);
+    player.setVolume(0.5);
+</script>
+</body>
+</html>
