@@ -6,10 +6,6 @@ import (
 	"go.uber.org/zap"
 )
 
-const (
-	twitch_api_base = "https://api.twitch.tv/helix/"
-)
-
 type Router struct {
 	logger *zap.Logger
 	router *routing.Router
@@ -30,7 +26,7 @@ func (r *Router) RegisterAndRun() error {
 	router.Get("/", r.ShowLoginPage)
 
 	router.Get("/streams", r.ListStreams)
-	router.Get("/streams/<id>", r.ShowStreamPage)
+	router.Get("/streams/<name>", r.ShowStreamPage)
 
 	r.logger.Info("HTTP service started on:", zap.String("address", "127.0.0.1:6121"))
 	return fasthttp.ListenAndServe(":8080", router.HandleRequest)

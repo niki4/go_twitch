@@ -41,9 +41,15 @@ type Chat struct {
 	Width            int
 }
 
+type EventsFrame struct {
+	Total  int
+	Events []string
+}
+
 type Frames struct {
 	Video
 	Chat
+	EventsFrame
 }
 
 // ListStreams dispatch request to list all Streams
@@ -80,8 +86,22 @@ func (r *Router) ListStreams(ctx *routing.Context) error {
 
 // ShowStreamPage dispatch request for specified Stream
 func (r *Router) ShowStreamPage(ctx *routing.Context) error {
-	channelName := ctx.Param("id")
+	channelName := ctx.Param("name")
 	r.logger.Info("ShowStreamPage:", zap.String("ChannelName", channelName))
+
+	channelID := ctx.QueryArgs().Peek("id")
+	clientID := []byte("zhhxr55p8a8ft88s88mp0nng3ssqhd")
+	chEvents, err := getChannelEvents(channelID, clientID)
+	if err != nil {
+		r.logger.Error("ShowStreamPage: Failure on get Channel Events", zap.Error(err))
+		return err
+	}
+
+	events := new(EventsFrame)
+	if err = json.NewDecoder(bytes.NewBuffer(chEvents)).Decode(events); err != nil {
+		r.logger.Error("ShowStreamPage: JSON decode error", zap.Error(err))
+		return err
+	}
 
 	embFrames := Frames{
 		Video{
@@ -97,6 +117,10 @@ func (r *Router) ShowStreamPage(ctx *routing.Context) error {
 			Height:           720,
 			Width:            450,
 		},
+		EventsFrame{
+			Total:  events.Total,
+			Events: events.Events,
+		},
 	}
 
 	ctx.SetContentType("text/html")
@@ -108,12 +132,15 @@ func (r *Router) ShowStreamPage(ctx *routing.Context) error {
 	return nil
 }
 
-func requestWithAuthorization(method, url string, authToken []byte) ([]byte, error) {
+func requestWithCookies(method, url string, cookies map[string][]byte) ([]byte, error) {
 	req, err := http.NewRequest(method, url, nil)
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", string(authToken))
+
+	for k, v := range cookies {
+		req.Header.Set(k, string(v))
+	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -131,5 +158,16 @@ func requestWithAuthorization(method, url string, authToken []byte) ([]byte, err
 }
 
 func getStreamList(authToken []byte) ([]byte, error) {
-	return requestWithAuthorization("GET", "https://api.twitch.tv/helix/streams?first=20", authToken)
+	return requestWithCookies(
+		"GET",
+		"https://api.twitch.tv/helix/streams?first=20",
+		map[string][]byte{"Authorization": authToken})
+}
+
+func getChannelEvents(streamID, clientID []byte) ([]byte, error) {
+	url := fmt.Sprintf("https://api.twitch.tv/v5/channels/%s/events", streamID)
+	return requestWithCookies(
+		"GET",
+		url,
+		map[string][]byte{"Client-ID": clientID})
 }

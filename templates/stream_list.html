@@ -10,7 +10,7 @@
 {{ range .Streams }}
     <div>
         <img src="{{ .ThumbURL }}"/>
-        <a href="http://localhost:8080/streams/{{ .UserName }}">{{ .Title }}</a><br>
+        <a href="http://localhost:8080/streams/{{ .UserName }}?id={{ .ID }}">{{ .Title }}</a><br>
     </div>
 {{ end }}
 </ul>
