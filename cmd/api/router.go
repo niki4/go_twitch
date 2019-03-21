@@ -10,14 +10,16 @@ type Router struct {
 	logger       *zap.Logger
 	router       *routing.Router
 	ClientSecret string
+	Port         string
 }
 
 // NewRouter create and init new Router
-func NewRouter(logger *zap.Logger, secret string) (*Router, error) {
+func NewRouter(logger *zap.Logger, secret, port string) (*Router, error) {
 	return &Router{
 		logger:       logger,
 		router:       routing.New(),
 		ClientSecret: secret,
+		Port:         port,
 	}, nil
 }
 
@@ -30,6 +32,6 @@ func (r *Router) RegisterAndRun() error {
 	router.Get("/streams", r.ListStreams)
 	router.Get("/streams/<name>", r.ShowStreamPage)
 
-	r.logger.Info("HTTP service started on:", zap.String("address", "127.0.0.1:6121"))
-	return fasthttp.ListenAndServe(":8080", router.HandleRequest)
+	r.logger.Info("HTTP service started")
+	return fasthttp.ListenAndServe(":"+r.Port, router.HandleRequest)
 }

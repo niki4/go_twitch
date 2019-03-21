@@ -1,1 +1,1 @@
-web: bin/go_twitch
+web: bin/cmd
