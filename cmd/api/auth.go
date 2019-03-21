@@ -69,7 +69,7 @@ func (r *Router) ShowLoginPage(ctx *routing.Context) error {
 	if OAuthCode != nil {
 		// moving to 2nd stage
 		loginData.URL.Base = "https://id.twitch.tv/oauth2/token"
-		loginData.Secret.ClientSecret = "" // Set your own Twitch Secret Client code :-P
+		loginData.Secret.ClientSecret = r.ClientSecret
 		loginData.Secret.UserOAuthCode = OAuthCode
 		loginData.URL.GrantType = "authorization_code"
 
