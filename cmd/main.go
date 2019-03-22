@@ -12,6 +12,15 @@ func main() {
 		panic(err)
 	}
 
+	hostName := os.Getenv("HOST")
+	if hostName == "" {
+		hostName, err = os.Hostname()
+		if err != nil {
+			logger.Fatal("Host name cannot be defined", zap.Error(err))
+		}
+	}
+	logger.Info("Host name is set", zap.String("Host", hostName))
+
 	listenPort := os.Getenv("PORT")
 	if listenPort == "" {
 		listenPort = "8080"
@@ -24,7 +33,7 @@ func main() {
 	}
 	logger.Info("ClientSecret is set, OK")
 
-	router, err := api.NewRouter(logger, clientSecret, listenPort)
+	router, err := api.NewRouter(logger, clientSecret, hostName, listenPort)
 	if err != nil {
 		logger.Fatal("Unable to init NewRouter:", zap.Error(err))
 	}
