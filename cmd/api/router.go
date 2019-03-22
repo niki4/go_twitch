@@ -9,16 +9,18 @@ import (
 type Router struct {
 	logger       *zap.Logger
 	router       *routing.Router
+	ClientID     string
 	ClientSecret string
 	Host         string
 	Port         string
 }
 
 // NewRouter create and init new Router
-func NewRouter(logger *zap.Logger, secret, host, port string) (*Router, error) {
+func NewRouter(logger *zap.Logger, id, secret, host, port string) (*Router, error) {
 	return &Router{
 		logger:       logger,
 		router:       routing.New(),
+		ClientID:     id,
 		ClientSecret: secret,
 		Host:         host,
 		Port:         port,
