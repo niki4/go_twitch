@@ -34,7 +34,8 @@ func (r *Router) RegisterAndRun() error {
 	router.Get("/streams", r.ListStreams)
 	router.Get("/streams/<name>", r.ShowStreamPage)
 
-	addr := r.Host + ":" + r.Port
-	r.logger.Info("HTTP service started", zap.String("URL", "http://"+addr))
+	r.logger.Info("HTTP service started",
+		zap.String("Incoming", "http://"+r.Host+":80"),
+		zap.String("Outgoing", "http://"+r.Host+":"+r.Port))
 	return fasthttp.ListenAndServe(":"+r.Port, router.HandleRequest)
 }
