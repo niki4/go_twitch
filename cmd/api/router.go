@@ -36,5 +36,5 @@ func (r *Router) RegisterAndRun() error {
 
 	addr := r.Host + ":" + r.Port
 	r.logger.Info("HTTP service started", zap.String("URL", "http://"+addr))
-	return fasthttp.ListenAndServe(addr, router.HandleRequest)
+	return fasthttp.ListenAndServe(":"+r.Port, router.HandleRequest)
 }
