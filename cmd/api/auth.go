@@ -49,7 +49,7 @@ func (r *Router) ShowLoginPage(ctx *routing.Context) error {
 	userAuthCookie := ctx.Request.Header.Cookie("Authorization")
 	if userAuthCookie != nil {
 		r.logger.Info("User provided Auth token", zap.ByteString("Authorization", userAuthCookie))
-		ctx.Redirect(fmt.Sprintf("http://localhost:%s/streams", r.Port), fasthttp.StatusOK)
+		ctx.Redirect("/streams", fasthttp.StatusOK)
 	}
 
 	// OAuth Authorization Code Flow. 1st stage
@@ -58,7 +58,7 @@ func (r *Router) ShowLoginPage(ctx *routing.Context) error {
 		URL: URLData{
 			Base:         "https://id.twitch.tv/oauth2/authorize",
 			ClientID:     "zhhxr55p8a8ft88s88mp0nng3ssqhd",
-			RedirectURI:  fmt.Sprintf("http://localhost:%s", r.Port),
+			RedirectURI:  fmt.Sprintf("http://%s:%s", r.Host, r.Port),
 			ResponseType: "code",
 			Scope:        "viewing_activity_read",
 		},
@@ -83,7 +83,7 @@ func (r *Router) ShowLoginPage(ctx *routing.Context) error {
 		userCookie.SetKey("Authorization")
 		userCookie.SetValue("Bearer " + UATdata.UserAccessToken)
 		ctx.Response.Header.SetCookie(&userCookie)
-		ctx.Redirect(fmt.Sprintf("http://localhost:%s/streams", r.Port), fasthttp.StatusOK)
+		ctx.Redirect("/streams", fasthttp.StatusOK)
 	}
 
 	ctx.SetContentType("text/html")
