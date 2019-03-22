@@ -8,7 +8,7 @@ Client utilizes Twitch API, therefore in order to get it running, you need to fi
 1. Create and login to Twitch account
 2. Register a [new App](https://dev.twitch.tv/console/apps) on Twitch Developers site.
 * *Owner*: name for your app
-* *OAuth Redirect URL*: this must be your client instance URL where Twitch will redirects once it got consent from user, e.g. "https://stark-harbor-28675.herokuapp.com:80" for Heroku instance or "http://localhost:80" if you want to run it locally.
+* *OAuth Redirect URL*: this must be your client instance URL where Twitch will redirects once it got consent from user, e.g. "http://stark-harbor-28675.herokuapp.com:80" for Heroku instance or "http://localhost:80" if you want to run it locally.
 * *Category*: whatever
 
 Copy your *"Client identifier"* and *"Client secret key"* (hit "New secret key" button to get it) and save it somewhere. This will be your Twitch client login and password :-)
@@ -55,4 +55,5 @@ If you want to run it on your own Heroku instance, simply follow this guideline:
 https://devcenter.heroku.com/articles/getting-started-with-go#deploy-the-app
 
 ## Known issues
-Once you get logged in to Twitch, your session keeps alive for around one hour. There is no automatic refresh for your auth token, so (at least locally) you have to manually clean cookies in order to get a new one. I will fix it if I find the time, also feel free to send PR with fix, I'll be more than happy accept it.
+1. Once you get logged in to Twitch, your session keeps alive for around one hour. There is no automatic refresh for your auth token, so (at least locally) you have to manually clean cookies in order to get a new one. I will fix it if I find the time, also feel free to send PR with fix, I'll be more than happy accept it.
+2. Heroku [does not provide SSL support](https://www.heroku.com/pricing) on Free plans. You need at least Hobby plan to get your https:// prefix works on your Heroku instance. So if you want to run the client on Free plan, it's important to take this in mind (as well as set http in redirect URL on Twitch app settings page, e.g. "http://stark-harbor-28675.herokuapp.com:80").
