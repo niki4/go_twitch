@@ -9,7 +9,7 @@ Client utilizes Twitch API, therefore in order to get it running, you need to fi
 2. Register a [new App](https://dev.twitch.tv/console/apps) on Twitch Developers site.
 * *Owner*: name for your app
 * *OAuth Redirect URL*: this must be your client instance URL where Twitch will redirects once it got consent from user, e.g. "http://stark-harbor-28675.herokuapp.com:80" for Heroku instance or "http://localhost:80" if you want to run it locally.
-* *Category*: whatever
+* *Category*: whatever, on your choice
 
 Copy your *"Client identifier"* and *"Client secret key"* (hit "New secret key" button to get it) and save it somewhere. This will be your Twitch client login and password :-)
 
@@ -17,10 +17,10 @@ Copy your *"Client identifier"* and *"Client secret key"* (hit "New secret key" 
 ### Now you can run client itself. 
 Following environments variables must be set to set up client:
 
-TWITCH_CLIENT_ID - Mandatory. Use *"Client identifier"* copied before as value.
-TWITCH_CLIENT_SECRET - Mandatory. Use *"Client secret key"* copied before as value.
-PORT - Optional. By default, if not provided, server will try to bind listener on port 8080. Heroku will automatically set PORT env var for you.
-HOST - Optional. It's used for creating Redirect URL inside client. By default, if not provided, client will try to guess your hostname, however it doesn't work well in case of Heroku instance. So, it's good to set this env var beforeahead.
+* TWITCH_CLIENT_ID - Mandatory. Use *"Client identifier"* copied before as value.
+* TWITCH_CLIENT_SECRET - Mandatory. Use *"Client secret key"* copied before as value.
+* PORT - Optional. By default, if not provided, server will try to bind listener on port 8080. Heroku will automatically set this env var for you when starting instance.
+* HOST - Optional. It's used for creating Redirect URL inside client. By default, if not provided, client will try to guess your hostname, however it doesn't work well in case of Heroku instance. So, it's recommended to set this env var beforeahead.
 
 #### How to set variables?
 *On Linux*:
@@ -53,6 +53,12 @@ It's currently running on my Heroku instance, so you can play around without any
 
 If you want to run it on your own Heroku instance, simply follow this guideline:
 https://devcenter.heroku.com/articles/getting-started-with-go#deploy-the-app
+
+#### How to use?
+1. Open main page
+2. Click "Login with Twitch account". This will redirect you to Twitch OAuth page, where you should give consent on using the client app with your Twitch account.
+3. Once you confirm login, you will be redirected to /streams page where displayed list of 20 latest streams which are currently online.
+4. Simply click on desired stream link and enjoy watching stream, chat and events
 
 ## Known issues
 1. Once you get logged in to Twitch, your session keeps alive for around one hour. There is no automatic refresh for your auth token, so (at least locally) you have to manually clean cookies in order to get a new one. I will fix it if I find the time, also feel free to send PR with fix, I'll be more than happy accept it.
